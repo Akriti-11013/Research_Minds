@@ -10,6 +10,9 @@ def _slug(value: str) -> str:
 
 def export_obsidian(state: ResearchState) -> dict[str, str]:
     report = state["report"]
+    citations = report.get("citations", [])
+    contradictions = report.get("contradictions", [])
+    quality_checks = report.get("quality_checks", [])
     lines = [
         "---",
         f"title: {report['title']}",
@@ -33,6 +36,13 @@ def export_obsidian(state: ResearchState) -> dict[str, str]:
     lines.extend(f"- {item}" for item in report["advantages"])
     lines.extend(["", "## Risks", ""])
     lines.extend(f"- {item}" for item in report["risks"])
-    lines.extend(["", "## Conclusion", "", str(report["conclusion"]), "", "## Sources", ""])
+    if contradictions:
+        lines.extend(["", "## Contradictions", ""])
+        lines.extend(f"- {item}" for item in contradictions)
+    lines.extend(["", "## Conclusion", "", str(report["conclusion"]), "", "## Citation Index", ""])
+    lines.extend(f"- {citation['id']} [{citation['title']}]({citation['url']}) - {citation['publisher']}" for citation in citations)
+    lines.extend(["", "## Quality Checks", ""])
+    lines.extend(f"- {item}" for item in quality_checks)
+    lines.extend(["", "## Sources", ""])
     lines.extend(f"- [{source['title']}]({source['url']}) - {source['publisher']}" for source in report["sources"])
-    return {"markdown": "\n".join(lines) + "\n"}
+    return {"markdown": "\n".join(lines) + "\n", "status": "completed"}

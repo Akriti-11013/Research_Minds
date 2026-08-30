@@ -31,9 +31,46 @@ function render() {
           </label>
         </div>
 
+        <div class="form-row secondary-row">
+          <label>
+            Number of sources
+            <select id="number-of-sources" name="number_of_sources">
+              <option value="3">3</option>
+              <option value="5" selected>5</option>
+              <option value="8">8</option>
+              <option value="10">10</option>
+            </select>
+          </label>
+
+          <label>
+            Output format
+            <select id="output-format" name="output_format">
+              <option value="markdown" selected>Markdown</option>
+              <option value="json">JSON</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="focus-wrap">
+          <span class="focus-label">Focus areas</span>
+          <div class="focus-grid">
+            <label><input type="checkbox" name="focus_areas" value="productivity" checked /> Productivity</label>
+            <label><input type="checkbox" name="focus_areas" value="security" checked /> Security</label>
+            <label><input type="checkbox" name="focus_areas" value="governance" /> Governance</label>
+            <label><input type="checkbox" name="focus_areas" value="trends" /> Trends</label>
+          </div>
+        </div>
+
         <button id="submit-button" type="submit">Generate report</button>
       </form>
       <div id="status" aria-live="polite"></div>
+      <div class="progress-list" aria-live="polite">
+        <span>Planning</span>
+        <span>Searching</span>
+        <span>Analyzing</span>
+        <span>Fact-checking</span>
+        <span>Exporting</span>
+      </div>
     </section>
 
     <section id="results" class="result-grid" hidden>
@@ -64,8 +101,12 @@ function render() {
     event.preventDefault();
     const topic = document.querySelector('#topic').value.trim();
     const depth = document.querySelector('#depth').value;
+    const numberOfSources = Number(document.querySelector('#number-of-sources').value);
+    const outputFormat = document.querySelector('#output-format').value;
+    const focusAreas = [...document.querySelectorAll('input[name="focus_areas"]:checked')].map((input) => input.value);
     const status = document.querySelector('#status');
     const button = document.querySelector('#submit-button');
+    const researchId = (globalThis.crypto && crypto.randomUUID) ? crypto.randomUUID() : `research-${Date.now()}`;
 
     if (!topic) {
       status.innerHTML = '<span class="error">Please enter a topic.</span>';
@@ -79,7 +120,7 @@ function render() {
       const response = await fetch(`${API_BASE}/research`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topic, depth }),
+        body: JSON.stringify({ topic, depth, research_id: researchId, focus_areas: focusAreas, number_of_sources: numberOfSources, output_format: outputFormat }),
       });
 
       const payload = await response.json();
@@ -90,7 +131,7 @@ function render() {
       }
 
       renderReport(payload);
-      status.textContent = 'Research brief ready.';
+      status.textContent = `Research brief ready. Research ID: ${payload.research_id || researchId}`;
     } catch (error) {
       status.innerHTML = `<span class="error">${error.message}</span>`;
     } finally {
@@ -106,7 +147,8 @@ function renderReport(data) {
   const findings = report.key_findings || [];
   const sources = report.sources || [];
 
-  document.querySelector('#report-title').textContent = title;
+  const researchId = data.research_id || 'research-local';
+  document.querySelector('#report-title').textContent = `${title} · ${researchId}`;
   document.querySelector('#executive-summary').textContent = summary;
   document.querySelector('#key-findings').innerHTML = findings
     .map((item) => `<li>${item}</li>`)

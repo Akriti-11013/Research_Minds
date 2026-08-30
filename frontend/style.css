@@ -107,11 +107,43 @@ form {
   gap: 14px;
 }
 
+.secondary-row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 label {
   display: grid;
   gap: 8px;
   color: var(--text);
   font-weight: 700;
+}
+
+.focus-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.focus-label {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.focus-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.focus-grid label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(118, 217, 255, 0.06);
+  border: 1px solid rgba(118, 217, 255, 0.16);
+  font-weight: 500;
+  color: var(--muted);
 }
 
 input, select {
@@ -156,6 +188,22 @@ button:disabled {
   min-height: 24px;
   color: var(--muted);
   font-size: 0.96rem;
+}
+
+.progress-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.progress-list span {
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(118, 217, 255, 0.08);
+  border: 1px solid rgba(118, 217, 255, 0.16);
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .result-grid {

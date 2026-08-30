@@ -1,7 +1,7 @@
 from app.models.state import ResearchState
 
 
-def analyze_sources(state: ResearchState) -> dict[str, list[dict[str, object]]]:
+def analyze_sources(state: ResearchState) -> dict[str, object]:
     analyses = []
     for source in state["sources"]:
         analyses.append(
@@ -12,4 +12,7 @@ def analyze_sources(state: ResearchState) -> dict[str, list[dict[str, object]]]:
                 "relevance": "high",
             }
         )
-    return {"source_analysis": analyses}
+    return {
+        "source_analysis": analyses,
+        "status": "analyzing",
+    }

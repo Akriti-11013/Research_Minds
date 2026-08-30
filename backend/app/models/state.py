@@ -59,6 +59,10 @@ class ResearchState(TypedDict, total=False):
     # Input
     topic: str
     depth: Depth
+    research_id: str
+    focus_areas: list[str]
+    number_of_sources: int
+    output_format: str
     
     # Planner Agent Output
     research_questions: list[str]
@@ -73,9 +77,12 @@ class ResearchState(TypedDict, total=False):
     # Fact Checker Agent Output
     fact_checks: list[dict]
     verified_claims: list[str]
+    contradictions: list[str]
     
     # Synthesizer Agent Output
     report: dict
+    citations: list[dict]
+    quality_checks: list[str]
     
     # Obsidian Exporter Output
     markdown: str
